@@ -1,0 +1,17 @@
+spring:
+  datesource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: 8834
+    driver-class-name: org.postgresql.Driver8
+
+
+  jpa:
+    database: POSTGRESQL
+    generate-ddl: true
+    show-sql: false
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: false
