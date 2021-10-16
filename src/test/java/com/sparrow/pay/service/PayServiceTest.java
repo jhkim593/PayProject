@@ -10,15 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-class CardServiceTest {
+class PayServiceTest {
 
     @Autowired
-    CardService cardService;
+    PayService payService;
 
     @Test
     public void dbConnectTest()throws Exception{
         String name="test";
-        cardService.createCard(name);
+        payService.createCard(name);
 
     }
 
