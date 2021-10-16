@@ -1,13 +1,12 @@
 spring:
-  datesource:
-    url: jdbc:postgresql://localhost:5432/postgres
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payproject
     username: postgres
     password: 8834
-    driver-class-name: org.postgresql.Driver8
-
+    driver-class-name: org.postgresql.Driver
 
   jpa:
-    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true
     show-sql: false
     hibernate:
