@@ -5,10 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,5 +20,34 @@ public class Pay {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable = false)
     private String data;
+
+    @Column(nullable = false)
+    private Boolean isCancel;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="parentPay")
+    private Pay parentPay;
+
+    @OneToMany(mappedBy = "parentPay")
+    private List<Pay>cancelPayList=new ArrayList<>();
+
+    private LocalDateTime regDate;
+
+
+    public static Pay createPay(String data,Boolean isCancel,Pay parentPay){
+        Pay pay=new Pay();
+        pay.data=data;
+        pay.isCancel=isCancel;
+        if(isCancel==true&&parentPay!=null){
+            pay.addParentPay(parentPay);
+        }
+        pay.regDate=LocalDateTime.now().withNano(0);
+        return pay;
+    }
+    public void addParentPay(Pay parentPay){
+        this.parentPay=parentPay;
+        parentPay.getCancelPayList().add(this);
+    }
 }
