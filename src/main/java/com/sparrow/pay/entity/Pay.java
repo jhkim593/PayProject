@@ -23,9 +23,6 @@ public class Pay {
     @Column(nullable = false)
     private String data;
 
-    @Column(nullable = false)
-    private Boolean isCancel;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="parentPay")
     private Pay parentPay;
@@ -36,11 +33,10 @@ public class Pay {
     private LocalDateTime regDate;
 
 
-    public static Pay createPay(String data,Boolean isCancel,Pay parentPay){
+    public static Pay createPay(String data,Pay parentPay){
         Pay pay=new Pay();
         pay.data=data;
-        pay.isCancel=isCancel;
-        if(isCancel==true&&parentPay!=null){
+        if(parentPay!=null){
             pay.addParentPay(parentPay);
         }
         pay.regDate=LocalDateTime.now().withNano(0);
