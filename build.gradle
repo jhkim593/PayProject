@@ -25,6 +25,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
 
 	//postgresql
 	implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.23'
