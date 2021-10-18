@@ -33,7 +33,6 @@ public class PayController {
         } catch (Exception e){
             return new ResponseEntity( "결제 오류", HttpStatus.CREATED);
         }
-
     }
 
 }
