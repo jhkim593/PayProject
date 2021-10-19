@@ -27,7 +27,6 @@ public class PayController {
     
     @PostMapping("/pay")
     public ResponseEntity pay(@RequestBody PayRequestDto requestDto){
-        requestDto.setFunc("PAYMENT");
         try {
             return new ResponseEntity( payService.createPay(requestDto), HttpStatus.CREATED);
         } catch (Exception e){

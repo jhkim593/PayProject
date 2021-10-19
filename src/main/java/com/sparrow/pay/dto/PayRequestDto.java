@@ -12,6 +12,6 @@ public class PayRequestDto {
     private int installmentMonth;
     private Long price;
     private Long vat;
-    private String func;
+
 
 }

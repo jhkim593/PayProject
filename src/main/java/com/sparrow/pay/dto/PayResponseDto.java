@@ -10,6 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PayResponseDto {
-    private String id;
+    private String payId;
     private String data;
 }

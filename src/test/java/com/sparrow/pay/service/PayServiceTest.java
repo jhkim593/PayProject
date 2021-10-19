@@ -3,20 +3,14 @@ package com.sparrow.pay.service;
 import com.sparrow.pay.dto.PayRequestDto;
 import com.sparrow.pay.dto.PayResponseDto;
 import com.sparrow.pay.repository.PayRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import org.springframework.transaction.annotation.Transactional;
-
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -25,8 +19,8 @@ class PayServiceTest {
     @Mock
     PayRepository payRepository;
 
-    @Spy
-    PayService payService=new PayService(payRepository);
+    @InjectMocks
+    PayService payService;
 
     /**
      * 부가세 있을 때**/
@@ -41,11 +35,11 @@ class PayServiceTest {
         requestDto.setInstallmentMonth(0);           //할부 개월수
         requestDto.setPrice(110000L);                //거래금액
         requestDto.setVat(10000L);                   //부가세
-        requestDto.setFunc("PAYMENT");               //데이터 구분
+
 
         //when
-        PayResponseDto responseDto = payService.getStringData(requestDto);
-        String id = responseDto.getId();
+        PayResponseDto responseDto = payService.createPay(requestDto);
+        String id = responseDto.getPayId();
         String data = responseDto.getData();
 
         //then
@@ -77,12 +71,12 @@ class PayServiceTest {
         requestDto.setInstallmentMonth(0);           //할부 개월수
         requestDto.setPrice(110000L);                //거래금액
         requestDto.setVat(null);                     //부가세 null
-        requestDto.setFunc("PAYMENT");               //데이터 구분
+
 
         //when
-        PayResponseDto responseDto = payService.getStringData(requestDto);
+        PayResponseDto responseDto = payService.createPay(requestDto);
         String data = responseDto.getData();
-        String id = responseDto.getId();
+        String id = responseDto.getPayId();
         //then
         assertThat(data.substring(0,4)).isEqualTo(" 446");                           //데이터 길이
         assertThat(data.substring(4,14)).isEqualTo("PAYMENT   ");                    //데이터 구분
