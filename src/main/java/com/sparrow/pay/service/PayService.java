@@ -37,6 +37,11 @@ public class PayService {
 
     private final PayRepository payRepository;
 
+//    public String dd(PayRequestDto requestDto)throws Exception{
+//        PayResponseDto pay = createPay(requestDto);
+//        pay.getData().substring(103,403).
+//    }
+
     @Transactional
     public PayResponseDto createPay(PayRequestDto requestDto) throws UnsupportedEncodingException, EncoderException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         //기능 구분
@@ -92,10 +97,11 @@ public class PayService {
 
     @Transactional
     public PayResponseDto createCancelPay(CancelPayRequestDto requestDto) throws Exception {
-        Pay pay = payRepository.findPayByPayId(requestDto.getPayId()).orElseThrow(PayNotFoundException::new);
+
+        Pay pay = payRepository.findByPayId(requestDto.getPayId()).orElseThrow(PayNotFoundException::new);
         String oriData = pay.getData();
 
-        Long oriPrice = Long.valueOf(oriData.substring(63, 73));
+        Long oriPrice = Long.valueOf(oriData.substring(63, 73).trim());
         Long oriVat = Long.valueOf(oriData.substring(73, 83));
         List<Long> priceList = new ArrayList<>();
         List<Long> vatList = new ArrayList<>();
@@ -103,7 +109,7 @@ public class PayService {
         //결제취소 데이터 값
         pay.getCancelPayList().stream().forEach(c -> {
             String temp = c.getData();
-            priceList.add(Long.valueOf(temp.substring(63, 73)));
+            priceList.add(Long.valueOf(temp.substring(63, 73).trim()));
             vatList.add(Long.valueOf(temp.substring(73, 83)));
 
         });

@@ -6,7 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PayRequestDto {
-    private long cardNum;
+
+
+    private Long cardNum;
     private int expirationDate;
     private int cvc;
     private int installmentMonth;
