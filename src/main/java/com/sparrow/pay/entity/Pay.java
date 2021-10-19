@@ -20,8 +20,11 @@ public class Pay {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 500)
     private String data;
+
+    @Column(nullable = false)
+    private String payId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="parentPay")
@@ -33,12 +36,13 @@ public class Pay {
     private LocalDateTime regDate;
 
 
-    public static Pay createPay(String data,Pay parentPay){
+    public static Pay createPay(String data,Pay parentPay,String payId){
         Pay pay=new Pay();
         pay.data=data;
         if(parentPay!=null){
             pay.addParentPay(parentPay);
         }
+        pay.payId=payId;
         pay.regDate=LocalDateTime.now().withNano(0);
         return pay;
     }
