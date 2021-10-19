@@ -1,8 +1,11 @@
 package com.sparrow.pay.service;
 
+import com.sparrow.pay.dto.CancelPayRequestDto;
 import com.sparrow.pay.dto.PayRequestDto;
 import com.sparrow.pay.dto.PayResponseDto;
 import com.sparrow.pay.repository.PayRepository;
+import com.sparrow.pay.util.AES256Util;
+import org.apache.commons.codec.net.URLCodec;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,10 +25,12 @@ class PayServiceTest {
     @InjectMocks
     PayService payService;
 
+    private static String key = "aes256-testingKey";
+
     /**
-     * 부가세 있을 때**/
+     * 부가세 있을 때 결제**/
     @Test
-    public void createPayTest()throws Exception{
+    public void createPayTestWithVAT()throws Exception{
 
         //given
         PayRequestDto requestDto=new PayRequestDto();
@@ -36,11 +41,15 @@ class PayServiceTest {
         requestDto.setPrice(110000L);                //거래금액
         requestDto.setVat(10000L);                   //부가세
 
-
         //when
         PayResponseDto responseDto = payService.createPay(requestDto);
         String id = responseDto.getPayId();
         String data = responseDto.getData();
+//        AES256Util aes256 = new AES256Util(key);
+//        URLCodec codec = new URLCodec();
+//
+//        String[] cardInfo = codec.decode(aes256.aesDecode(responseDto.getData().substring(103,403)).trim().split("_");
+
 
         //then
         assertThat(data.substring(0,4)).isEqualTo(" 446");                           //데이터 길이
@@ -53,16 +62,18 @@ class PayServiceTest {
         assertThat(data.substring(63,73)).isEqualTo("    110000");                   //거래금액
         assertThat(data.substring(73,83)).isEqualTo("0000010000");                   //부가세
         assertThat(data.substring(83,103)).isEqualTo("                    ");
-//        assertThat(data.substring(103,403)).isEqualTo("");
-//        assertThat(data.substring(403,450)).isEqualTo()
+//        assertThat(cardInfo[0]).isEqualTo("1234567890123456");
+//        assertThat(cardInfo[1]).isEqualTo("1125");
+//        assertThat(cardInfo[2]).isEqualTo("777");
+        assertThat(data.substring(403,450).trim().length()).isEqualTo(0);
 
 
     }
 
     /**
-     * 부가세 **/
+     * 부가세 없을때 결제**/
     @Test
-    public void createPayTestWithVAT()throws Exception{
+    public void createPayTest()throws Exception{
         //given
         PayRequestDto requestDto=new PayRequestDto();
         requestDto.setCardNum(1234567890123456L);    //카드번호
@@ -89,6 +100,20 @@ class PayServiceTest {
         assertThat(data.substring(73,83)).isEqualTo("0000010000");                   //부가세
         assertThat(data.substring(83,103)).isEqualTo("                    ");
 
+
+    }
+    @Test
+    public void createCancelPay()throws Exception{
+        //given
+        CancelPayRequestDto cancelPayRequestDto=new CancelPayRequestDto();
+        cancelPayRequestDto.setPayId();
+        cancelPayRequestDto.setCancelPrice();
+        cancelPayRequestDto.setVat();
+
+        //when
+        PayResponseDto cancelPay = payService.createCancelPay(cancelPayRequestDto);
+
+        //then
 
     }
 

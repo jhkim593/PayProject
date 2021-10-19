@@ -1,7 +1,11 @@
 package com.sparrow.pay.controller;
 
+import com.sparrow.pay.dto.CancelPayRequestDto;
 import com.sparrow.pay.dto.PayRequestDto;
 import com.sparrow.pay.dto.PayResponseDto;
+import com.sparrow.pay.exception.ExceedCancelPayException;
+import com.sparrow.pay.exception.ExceedVatException;
+import com.sparrow.pay.exception.VatExceedPriceException;
 import com.sparrow.pay.service.PayService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.EncoderException;
@@ -34,4 +38,18 @@ public class PayController {
         }
     }
 
+    @PostMapping("/pay/cancel")
+    public ResponseEntity cancelPay(@RequestBody CancelPayRequestDto requestDto){
+        try {
+            return new ResponseEntity( payService.createCancelPay(requestDto), HttpStatus.CREATED);
+        } catch (ExceedCancelPayException e){
+            return new ResponseEntity( "취소금액이 결제금액을 초과했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (ExceedVatException e){
+            return new ResponseEntity( "취소부가세가 결제부가세를 초과했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (VatExceedPriceException e){
+            return new ResponseEntity( "부가세가 결제금액을 초과했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (Exception e){
+            return new ResponseEntity( "결제 오류", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
