@@ -299,10 +299,6 @@ class PayServiceTest {
 
         //then
         assertThatThrownBy(()->payService.createCancelPay(requestDto)).isInstanceOf(VatExceedPriceException.class);
-
     }
-
-
-
 
 }
