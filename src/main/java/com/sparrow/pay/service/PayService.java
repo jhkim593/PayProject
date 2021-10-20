@@ -1,8 +1,6 @@
 package com.sparrow.pay.service;
 
-import com.sparrow.pay.dto.CancelPayRequestDto;
-import com.sparrow.pay.dto.PayRequestDto;
-import com.sparrow.pay.dto.PayResponseDto;
+import com.sparrow.pay.dto.*;
 import com.sparrow.pay.entity.Pay;
 import com.sparrow.pay.exception.ExceedCancelPayException;
 import com.sparrow.pay.exception.ExceedVatException;
@@ -11,6 +9,7 @@ import com.sparrow.pay.exception.VatExceedPriceException;
 import com.sparrow.pay.repository.PayRepository;
 import com.sparrow.pay.util.AES256Util;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.springframework.stereotype.Service;
@@ -43,9 +42,10 @@ public class PayService {
 //    }
 
     @Transactional
-    public PayResponseDto createPay(PayRequestDto requestDto) throws UnsupportedEncodingException, EncoderException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public PayResponseDto createPay(PayRequestDto requestDto) throws UnsupportedEncodingException, EncoderException, InvalidAlgorithmParameterException,
+            NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         //기능 구분
-        String payment = String.format("%-10s", "PAYMENT");
+        String type = String.format("%-10s", "PAYMENT");
 
         //관리번호
         String payId = "";
@@ -89,11 +89,13 @@ public class PayService {
 
         String extra = String.format("%47s", "");
 
-        String data = " 446" + payment + payId + cardNum + installmentMonth + expirationDate + cvc + price + vat + oriPayId + cardInfo + extra;
+        String data = " 446" + type + payId + cardNum + installmentMonth + expirationDate + cvc + price + vat + oriPayId + cardInfo + extra;
 
         payRepository.save(Pay.createPay(data, null, payId));
         return new PayResponseDto(payId, data);
     }
+
+
 
     @Transactional
     public PayResponseDto createCancelPay(CancelPayRequestDto requestDto) throws Exception {
@@ -149,7 +151,7 @@ public class PayService {
             throw new VatExceedPriceException();
         }
         //기능 구분
-        String payment = String.format("%-10s", "CANCEL");
+        String type = String.format("%-10s", "CANCEL");
 
         //관리번호
         String payId = "";
@@ -186,10 +188,43 @@ public class PayService {
         String extra = String.format("%47s", "");
 
         //String data
-        String data = " 446" + payment + payId + cardNum + installmentMonth + expirationDate + cvc + price + vat + oriPayId + cardInfo + extra;
+        String data = " 446" + type + payId + cardNum + installmentMonth + expirationDate + cvc + price + vat + oriPayId + cardInfo + extra;
 
         payRepository.save(Pay.createPay(data, pay, payId));
         return new PayResponseDto(payId, data);
+    }
+
+    /**
+     * @param payId 관리 번호
+     */
+
+    public PayInfoDto findPay(String payId) throws UnsupportedEncodingException, DecoderException, InvalidAlgorithmParameterException, NoSuchPaddingException,
+            IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException ,PayNotFoundException{
+        Pay pay = payRepository.findByPayId(payId).orElseThrow(PayNotFoundException::new);
+        String data = pay.getData();
+
+        AES256Util aes256 = new AES256Util(key);
+        URLCodec codec = new URLCodec();
+
+        //카드 정보 복호화
+        String[] cardInfo = aes256.aesDecode(codec.decode(data.substring(103, 403).trim())).split("_");
+
+        //카드번호 앞6자리 뒤3자리를 제외한 나머지 마스킹
+        String cardNum = cardInfo[0];
+
+        cardNum= cardNum.substring(0, 6) + "*".repeat(cardNum.length()-9) + cardNum.substring(cardNum.length() - 3);
+
+        //결제,취소 구분
+        String type = data.substring(4, 14).trim();
+
+        //결제,취소금액
+        Long price = Long.valueOf(data.substring(63, 73).trim());
+
+        //부가가치세
+        Long vat = Long.valueOf(data.substring(73, 83));
+
+        return new PayInfoDto(payId, new CardInfoDto(cardNum,Integer.valueOf(cardInfo[1]),Integer.valueOf(cardInfo[2]))
+                ,type,new PriceInfoDto(price,vat));
     }
 
 }

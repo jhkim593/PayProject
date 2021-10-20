@@ -12,9 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.EncoderException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -44,7 +42,7 @@ public class PayController {
         try {
             return new ResponseEntity( payService.createCancelPay(requestDto).getPayId(), HttpStatus.CREATED);
         }catch (PayNotFoundException e){
-            return new ResponseEntity( "기존 결제 정보를 찾을 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity( "기존 결제 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
         } catch (ExceedCancelPayException e){
             return new ResponseEntity( "취소금액이 결제금액을 초과했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (ExceedVatException e){
@@ -52,8 +50,18 @@ public class PayController {
         }catch (VatExceedPriceException e){
             return new ResponseEntity( "부가세가 결제금액을 초과했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }catch (Exception e){
-            e.printStackTrace();
             return new ResponseEntity( "결제 취소 오류", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/pay/{id}")
+    public ResponseEntity findPay(@PathVariable String id){
+        try{
+            return new ResponseEntity(payService.findPay(id).getPayId(), HttpStatus.OK);
+        }catch (PayNotFoundException e){
+            return new ResponseEntity( "기존 결제 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity( "결제 정보 조회 오류", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

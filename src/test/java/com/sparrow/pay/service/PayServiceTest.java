@@ -1,11 +1,13 @@
 package com.sparrow.pay.service;
 
 import com.sparrow.pay.dto.CancelPayRequestDto;
+import com.sparrow.pay.dto.PayInfoDto;
 import com.sparrow.pay.dto.PayRequestDto;
 import com.sparrow.pay.dto.PayResponseDto;
 import com.sparrow.pay.entity.Pay;
 import com.sparrow.pay.exception.ExceedCancelPayException;
 import com.sparrow.pay.exception.ExceedVatException;
+import com.sparrow.pay.exception.PayNotFoundException;
 import com.sparrow.pay.exception.VatExceedPriceException;
 import com.sparrow.pay.repository.PayRepository;
 import com.sparrow.pay.util.AES256Util;
@@ -18,8 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
@@ -136,7 +137,6 @@ class PayServiceTest {
         PayResponseDto cancelPay = payService.createCancelPay(requestDto);
         String payId = cancelPay.getPayId();
         String data = cancelPay.getData();
-        System.out.println(data+"end");
         //then
         assertThat(data.substring(0,4)).isEqualTo(" 446");                           //데이터 길이
         assertThat(data.substring(4,14)).isEqualTo("CANCEL    ");                    //데이터 구분
@@ -299,10 +299,26 @@ class PayServiceTest {
 
         //then
         assertThatThrownBy(()->payService.createCancelPay(requestDto)).isInstanceOf(VatExceedPriceException.class);
-
     }
 
+    /**
+     * 결제 정보 조회 **/
+    @Test
+    public void findPay()throws Exception{
+        //given
+        String temp=" 446PAYMENT   574413866108083766091234567890123456    001125777    1100000000010000                    lQUrO5X3EKg1B4A8rlN%2F2ReOC8hgQZVqGKr6I9sboPI%3D                                                                                                                                                                                                                                                                                                           ";
+        given(payRepository.findByPayId(anyString())).willReturn(Optional.of(Pay.createPay(temp,null,"57441386610808376609")));
 
+        //when
+        PayInfoDto pay = payService.findPay("57441386610808376609");
 
-
+        //then
+        assertThat(pay.getPayId()).isEqualTo("57441386610808376609");
+        assertThat(pay.getCardInfo().getCardNum()).isEqualTo("123456*******456");
+        assertThat(pay.getCardInfo().getExpirationDate()).isEqualTo(1125);
+        assertThat(pay.getCardInfo().getCvc()).isEqualTo(777);
+        assertThat(pay.getPriceInfo().getPrice()).isEqualTo(110000L);
+        assertThat(pay.getPriceInfo().getVat()).isEqualTo(10000L);
+        assertThat(pay.getType()).isEqualTo("PAYMENT");
+    }
 }
