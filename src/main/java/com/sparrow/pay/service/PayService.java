@@ -198,7 +198,7 @@ public class PayService {
      */
 
     public PayInfoDto findPay(String payId) throws UnsupportedEncodingException, DecoderException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+            IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException ,PayNotFoundException{
         Pay pay = payRepository.findByPayId(payId).orElseThrow(PayNotFoundException::new);
         String data = pay.getData();
 
