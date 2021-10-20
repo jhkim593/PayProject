@@ -223,7 +223,7 @@ public class PayService {
         //부가가치세
         Long vat = Long.valueOf(data.substring(73, 83));
 
-        return new PayInfoDto(payId, new CardInfoDto(cardNum,Integer.valueOf(cardInfo[1]),Integer.valueOf(cardInfo[2]))
+        return new PayInfoDto(payId, new CardInfoDto(cardNum,cardInfo[1],cardInfo[2])
                 ,type,new PriceInfoDto(price,vat));
     }
 

@@ -43,9 +43,9 @@ class PayServiceTest {
 
         //given
         PayRequestDto requestDto=new PayRequestDto();
-        requestDto.setCardNum(1234567890123456L);    //카드번호
-        requestDto.setExpirationDate(1125);          //유효기간
-        requestDto.setCvc(777);                      //cvc
+        requestDto.setCardNum("1234567890123456");    //카드번호
+        requestDto.setExpirationDate("1125");          //유효기간
+        requestDto.setCvc("777");                      //cvc
         requestDto.setInstallmentMonth(0);           //할부 개월수
         requestDto.setPrice(110000L);                //거래금액
         requestDto.setVat(10000L);                   //부가세
@@ -84,9 +84,9 @@ class PayServiceTest {
     public void createPayTest()throws Exception{
         //given
         PayRequestDto requestDto=new PayRequestDto();
-        requestDto.setCardNum(1234567890123456L);    //카드번호
-        requestDto.setExpirationDate(1125);          //유효기간
-        requestDto.setCvc(777);                      //cvc
+        requestDto.setCardNum("1234567890123456");    //카드번호
+        requestDto.setExpirationDate("1125");          //유효기간
+        requestDto.setCvc("777");                      //cvc
         requestDto.setInstallmentMonth(0);           //할부 개월수
         requestDto.setPrice(110000L);                //거래금액
         requestDto.setVat(null);                     //부가세 null
@@ -315,8 +315,8 @@ class PayServiceTest {
         //then
         assertThat(pay.getPayId()).isEqualTo("57441386610808376609");
         assertThat(pay.getCardInfo().getCardNum()).isEqualTo("123456*******456");
-        assertThat(pay.getCardInfo().getExpirationDate()).isEqualTo(1125);
-        assertThat(pay.getCardInfo().getCvc()).isEqualTo(777);
+        assertThat(pay.getCardInfo().getExpirationDate()).isEqualTo("1125");
+        assertThat(pay.getCardInfo().getCvc()).isEqualTo("777");
         assertThat(pay.getPriceInfo().getPrice()).isEqualTo(110000L);
         assertThat(pay.getPriceInfo().getVat()).isEqualTo(10000L);
         assertThat(pay.getType()).isEqualTo("PAYMENT");

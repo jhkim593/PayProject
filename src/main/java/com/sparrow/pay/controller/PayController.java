@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -29,7 +30,7 @@ public class PayController {
     private final PayService payService;
     
     @PostMapping("/pay")
-    public ResponseEntity pay(@RequestBody PayRequestDto requestDto){
+    public ResponseEntity pay(@RequestBody @Valid PayRequestDto requestDto){
         try {
             return new ResponseEntity( payService.createPay(requestDto).getPayId(), HttpStatus.CREATED);
         } catch (Exception e){
@@ -38,7 +39,7 @@ public class PayController {
     }
 
     @PostMapping("/pay/cancel")
-    public ResponseEntity cancelPay(@RequestBody CancelPayRequestDto requestDto){
+    public ResponseEntity cancelPay(@RequestBody @Valid CancelPayRequestDto requestDto){
         try {
             return new ResponseEntity( payService.createCancelPay(requestDto).getPayId(), HttpStatus.CREATED);
         }catch (PayNotFoundException e){
