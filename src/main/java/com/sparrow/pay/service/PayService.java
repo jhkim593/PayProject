@@ -42,7 +42,8 @@ public class PayService {
 //    }
 
     @Transactional
-    public PayResponseDto createPay(PayRequestDto requestDto) throws UnsupportedEncodingException, EncoderException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public PayResponseDto createPay(PayRequestDto requestDto) throws UnsupportedEncodingException, EncoderException, InvalidAlgorithmParameterException,
+            NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         //기능 구분
         String type = String.format("%-10s", "PAYMENT");
 
@@ -208,6 +209,11 @@ public class PayService {
         //카드 정보 복호화
         String[] cardInfo = aes256.aesDecode(codec.decode(data.substring(103, 403).trim())).split("_");
 
+        //카드번호 앞6자리 뒤3자리를 제외한 나머지 마스킹
+        String cardNum = cardInfo[0];
+
+        cardNum= cardNum.substring(0, 6) + "*".repeat(cardNum.length()-9) + cardNum.substring(cardNum.length() - 3);
+
         //결제,취소 구분
         String type = data.substring(4, 14).trim();
 
@@ -217,7 +223,7 @@ public class PayService {
         //부가가치세
         Long vat = Long.valueOf(data.substring(73, 83));
 
-        return new PayInfoDto(payId, new CardInfoDto(Long.valueOf(cardInfo[0]),Integer.valueOf(cardInfo[1]),Integer.valueOf(cardInfo[2]))
+        return new PayInfoDto(payId, new CardInfoDto(cardNum,Integer.valueOf(cardInfo[1]),Integer.valueOf(cardInfo[2]))
                 ,type,new PriceInfoDto(price,vat));
     }
 

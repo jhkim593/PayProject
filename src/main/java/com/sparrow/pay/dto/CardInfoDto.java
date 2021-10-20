@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CardInfoDto {
-    private Long cardNum;
+    private String cardNum;
     private int expirationDate;
     private int cvc;
 }
