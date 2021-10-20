@@ -1,9 +1,6 @@
 package com.sparrow.pay.service;
 
-import com.sparrow.pay.dto.CancelPayRequestDto;
-import com.sparrow.pay.dto.PayInfoDto;
-import com.sparrow.pay.dto.PayRequestDto;
-import com.sparrow.pay.dto.PayResponseDto;
+import com.sparrow.pay.dto.*;
 import com.sparrow.pay.entity.Pay;
 import com.sparrow.pay.exception.ExceedCancelPayException;
 import com.sparrow.pay.exception.ExceedVatException;
@@ -26,7 +23,7 @@ import static org.mockito.BDDMockito.given;
 
 
 @ExtendWith(MockitoExtension.class)
-class PayServiceTest {
+class PayServiceTest1 {
 
     @Mock
     PayRepository payRepository;
@@ -134,7 +131,7 @@ class PayServiceTest {
         String temp=" 446PAYMENT   574413866108083766091234567890123456    001125777    1100000000010000                    lQUrO5X3EKg1B4A8rlN%2F2ReOC8hgQZVqGKr6I9sboPI%3D                                                                                                                                                                                                                                                                                                           ";
         given(payRepository.findByPayId(anyString())).willReturn(Optional.of(Pay.createPay(temp,null,"57441386610808376609")));
         //when
-        PayResponseDto cancelPay = payService.createCancelPay(requestDto);
+        CancelPayResponseDto cancelPay = payService.createCancelPay(requestDto);
         String payId = cancelPay.getPayId();
         String data = cancelPay.getData();
         //then

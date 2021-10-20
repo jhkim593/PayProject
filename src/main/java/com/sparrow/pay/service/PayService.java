@@ -98,7 +98,7 @@ public class PayService {
 
 
     @Transactional
-    public PayResponseDto createCancelPay(CancelPayRequestDto requestDto) throws Exception {
+    public CancelPayResponseDto createCancelPay(CancelPayRequestDto requestDto) throws Exception {
 
         Pay pay = payRepository.findByPayId(requestDto.getPayId()).orElseThrow(PayNotFoundException::new);
         String oriData = pay.getData();
@@ -133,18 +133,25 @@ public class PayService {
             cancelVat = requestDto.getVat();
         }
 
-        //결제금액 <취소금액
+        //결제금액 < 취소금액
         if (oriPrice < cancelPrice) {
             throw new ExceedCancelPayException();
         }
 
-        //결제부가세<취소 부가세
-        if (oriVat < cancelVat) {
-            throw new ExceedVatException();
+        //결제부가세 < 취소 부가세
+        if(requestDto.getVat()==null&&oriPrice.equals(cancelPrice)&&cancelVat>oriVat){
+            oriVat=0L;
+            oriPrice=0L;
+
+        }
+        else {
+            if (oriVat < cancelVat) {
+                throw new ExceedVatException();
+            }
+            oriPrice -= cancelPrice;
+            oriVat -= cancelVat;
         }
 
-        oriPrice -= cancelPrice;
-        oriVat -= cancelVat;
 
         //결제금액 <부가세
         if (oriPrice < oriVat) {
@@ -191,10 +198,11 @@ public class PayService {
         String data = " 446" + type + payId + cardNum + installmentMonth + expirationDate + cvc + price + vat + oriPayId + cardInfo + extra;
 
         payRepository.save(Pay.createPay(data, pay, payId));
-        return new PayResponseDto(payId, data);
+        return new CancelPayResponseDto(payId, data,oriPrice,oriVat);
     }
 
     /**
+     * 결제 정보 조회
      * @param payId 관리 번호
      */
 
