@@ -23,7 +23,7 @@ public class Pay {
     @Column(nullable = false,length = 500)
     private String data;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String payId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,6 +34,9 @@ public class Pay {
     private List<Pay>cancelPayList=new ArrayList<>();
 
     private LocalDateTime regDate;
+
+    @Version
+    private Long version;
 
 
     public static Pay createPay(String data,Pay parentPay,String payId){

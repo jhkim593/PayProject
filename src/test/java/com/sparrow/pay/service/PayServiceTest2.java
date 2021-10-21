@@ -15,11 +15,19 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.OptimisticLockException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
-@Transactional
+
+
 public class PayServiceTest2 {
 
     @Autowired
@@ -152,7 +160,43 @@ public class PayServiceTest2 {
 
         assertThat(cancelPay.getOriPrice()).isEqualTo(0L);
         assertThat(cancelPay.getOriVat()).isEqualTo(0L);
+    }
+    /**
+     * 같은 결제에 대해 동시성 Test**/
 
+    private ExecutorService ex = Executors.newFixedThreadPool(50);
+    private CountDownLatch latch=new CountDownLatch(50);
+
+    @Test
+    public void lockTest()throws Exception{
+
+        PayRequestDto payRequestDto=new PayRequestDto();
+        payRequestDto.setCardNum("1234567890123456");
+        payRequestDto.setExpirationDate("1125");
+        payRequestDto.setCvc("777");
+        payRequestDto.setPrice(20000L);
+        payRequestDto.setVat(1000L);
+        PayResponseDto payResponseDto = payService.createPay(payRequestDto);
+
+        for(int i=0; i<50;i++){
+            ex.execute(()->{
+                try {
+                    CancelPayRequestDto cancelPayRequestDto3=new CancelPayRequestDto();
+                    cancelPayRequestDto3.setPayId(payResponseDto.getPayId());
+                    cancelPayRequestDto3.setCancelPrice(100L);
+                    cancelPayRequestDto3.setVat(10L);
+                    payService.createCancelPay(cancelPayRequestDto3);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                latch.countDown();
+
+            });
+        }
+        latch.await();
+//        System.out.println(list.get(list.size()-1).getOriPrice());
 
     }
 }
+
