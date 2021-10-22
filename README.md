@@ -1,4 +1,6 @@
 
+# **Spring Data JPA의 **
+
 
 ## 개발 환경 
 
@@ -44,4 +46,7 @@
 - Request data 유효성 검증
 - String.format을 사용해 
 -  JPA PESSIMISTIC Lock을 이용해 원 결제건에서 결제 취소 동시성 방어
+
+
+
 
