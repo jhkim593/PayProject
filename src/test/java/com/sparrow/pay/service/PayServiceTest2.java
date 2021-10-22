@@ -4,9 +4,12 @@ import com.sparrow.pay.dto.CancelPayRequestDto;
 import com.sparrow.pay.dto.CancelPayResponseDto;
 import com.sparrow.pay.dto.PayRequestDto;
 import com.sparrow.pay.dto.PayResponseDto;
+import com.sparrow.pay.entity.Pay;
 import com.sparrow.pay.exception.ExceedCancelPayException;
 import com.sparrow.pay.exception.ExceedVatException;
+import com.sparrow.pay.exception.PayNotFoundException;
 import com.sparrow.pay.exception.VatExceedPriceException;
+import com.sparrow.pay.repository.PayRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +18,27 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.OptimisticLockException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
-@Transactional
 public class PayServiceTest2 {
 
     @Autowired
     PayService payService;
 
-    @Autowired
-    EntityManager em;
+//    @Autowired
+//    EntityManager em;
+//
+//    @Autowired
+//    PayRepository payRepository;
 
     @Test
     public void case1()throws Exception {
@@ -152,7 +164,55 @@ public class PayServiceTest2 {
 
         assertThat(cancelPay.getOriPrice()).isEqualTo(0L);
         assertThat(cancelPay.getOriVat()).isEqualTo(0L);
+    }
+    /**
+     * 같은 결제에 대해 동시성 Test**/
 
+    private ExecutorService ex = Executors.newFixedThreadPool(100);
+    private CountDownLatch latch=new CountDownLatch(100);
+
+
+    @Test
+    public void lockTest()throws Exception{
+
+        PayRequestDto payRequestDto=new PayRequestDto();
+        payRequestDto.setCardNum("1234567890123456");
+        payRequestDto.setExpirationDate("1125");
+        payRequestDto.setCvc("777");
+        payRequestDto.setPrice(20000L);
+        payRequestDto.setVat(5000L);
+        PayResponseDto payResponseDto = payService.createPay(payRequestDto);
+        List<CancelPayResponseDto>list=new ArrayList<>();
+
+        for(int i=0; i<100;i++){
+            ex.execute(()->{
+                try {
+                    CancelPayRequestDto cancelPayRequestDto=new CancelPayRequestDto();
+                    cancelPayRequestDto.setPayId(payResponseDto.getPayId());
+                    cancelPayRequestDto.setCancelPrice(100L);
+                    cancelPayRequestDto.setVat(10L);
+                    CancelPayResponseDto cancelPay = payService.createCancelPay(cancelPayRequestDto);
+                    list.add(cancelPay);
+                } catch (Exception e) {
+
+                }
+                latch.countDown();
+            });
+        }
+        latch.await();
+
+        CancelPayRequestDto cancelPayRequestDto=new CancelPayRequestDto();
+        cancelPayRequestDto.setPayId(payResponseDto.getPayId());
+        cancelPayRequestDto.setCancelPrice(100L);
+        cancelPayRequestDto.setVat(10L);
+
+        CancelPayResponseDto cancelPay = payService.createCancelPay(cancelPayRequestDto);
+
+        assertThat(cancelPay.getOriPrice()).isEqualTo(9900L);
+        assertThat(cancelPay.getOriVat()).isEqualTo(3990L);
+        assertThat(list.get(list.size()-1).getOriPrice()).isEqualTo(10000L);
+        assertThat(list.get(list.size()-1).getOriVat()).isEqualTo(4000L);
 
     }
 }
+
