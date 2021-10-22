@@ -1,7 +1,3 @@
-
-# **Spring Data JPA의 **
-
-
 ## 개발 환경 
 
 - InteliJ 2021.2.2
