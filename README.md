@@ -40,8 +40,8 @@
 
 - 카드정보 암호화를 위해 AES 암호화 방식 사용
 - Request data 유효성 검증
-- String.format을 사용해 
--  JPA PESSIMISTIC Lock을 이용해 원 결제건에서 결제 취소 동시성 방어
+- Sring 데이터 명세와 일치를 위해 String.format을 사용
+- JPA PESSIMISTIC Lock을 이용해 원 결제건에서 결제 취소 동시성 방어
 
 
 
