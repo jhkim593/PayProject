@@ -14,8 +14,7 @@ import java.util.Optional;
 
 public interface PayRepository extends JpaRepository<Pay,Long> {
 
-//    @Query(value = "select * from Pay where pay_id=:payId",nativeQuery = true)
-    @Lock(LockModeType.PESSIMISTIC_FORCE_INCREMENT)
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Pay> findByPayId(String payId);
 
 }

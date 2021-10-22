@@ -198,6 +198,8 @@ public class PayService {
         String data = " 446" + type + payId + cardNum + installmentMonth + expirationDate + cvc + price + vat + oriPayId + cardInfo + extra;
 
         payRepository.save(Pay.createPay(data, pay, payId));
+//        System.out.println("현재금액:"+oriPrice+" "+"현재부가세"+oriVat);
+//        System.out.println();
         return new CancelPayResponseDto(payId, data,oriPrice,oriVat);
     }
 

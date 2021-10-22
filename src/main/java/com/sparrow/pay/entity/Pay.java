@@ -35,8 +35,8 @@ public class Pay {
 
     private LocalDateTime regDate;
 
-    @Version
-    private Long version;
+//    @Version
+//    private Long version;
 
 
     public static Pay createPay(String data,Pay parentPay,String payId){
