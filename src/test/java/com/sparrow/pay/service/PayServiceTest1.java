@@ -15,9 +15,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
@@ -130,6 +132,7 @@ class PayServiceTest1 {
 
         String temp=" 446PAYMENT   574413866108083766091234567890123456    001125777    1100000000010000                    lQUrO5X3EKg1B4A8rlN%2F2ReOC8hgQZVqGKr6I9sboPI%3D                                                                                                                                                                                                                                                                                                           ";
         given(payRepository.findByPayId(anyString())).willReturn(Optional.of(Pay.createPay(temp,null,"57441386610808376609")));
+
         //when
         CancelPayResponseDto cancelPay = payService.createCancelPay(requestDto);
         String payId = cancelPay.getPayId();

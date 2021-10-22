@@ -16,15 +16,12 @@ import java.util.List;
 @NoArgsConstructor
 public class Pay {
 
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String payId;
 
     @Column(nullable = false,length = 500)
     private String data;
-
-    @Column(nullable = false, unique = true)
-    private String payId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="parentPay")
@@ -32,8 +29,6 @@ public class Pay {
 
     @OneToMany(mappedBy = "parentPay")
     private List<Pay>cancelPayList=new ArrayList<>();
-
-    private LocalDateTime regDate;
 
 //    @Version
 //    private Long version;
@@ -46,9 +41,9 @@ public class Pay {
             pay.addParentPay(parentPay);
         }
         pay.payId=payId;
-        pay.regDate=LocalDateTime.now().withNano(0);
         return pay;
     }
+
     public void addParentPay(Pay parentPay){
         this.parentPay=parentPay;
         parentPay.getCancelPayList().add(this);

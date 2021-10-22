@@ -115,7 +115,6 @@ public class PayService {
             vatList.add(Long.valueOf(temp.substring(73, 83)));
 
         });
-
         for (Long price : priceList) {
             oriPrice -= price;
         }

@@ -34,11 +34,11 @@ public class PayServiceTest2 {
     @Autowired
     PayService payService;
 
-    @Autowired
-    EntityManager em;
-
-    @Autowired
-    PayRepository payRepository;
+//    @Autowired
+//    EntityManager em;
+//
+//    @Autowired
+//    PayRepository payRepository;
 
     @Test
     public void case1()throws Exception {
