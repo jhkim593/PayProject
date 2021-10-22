@@ -2,12 +2,13 @@
 
 ## 개발 환경 
 
+- InteliJ 2021.2.2
+
 - Spring boot 2.5.5
 
 - Postgresql 
-- InteliJ 
 
-
+<br>
 
 ## table
 
@@ -24,13 +25,15 @@
 
 
 
+
+
 ## Git flow
 
 <img src="https://user-images.githubusercontent.com/53510936/138382890-25ef69db-dbcc-439e-96a0-689429f16505.png"  width="550" height="350" style="margin-left: auto; margin-right: auto; display: block;"/>
 
-- master : 
-- develop
-- feature : 기능 개발
+- master :  기준 브랜치 제품을 배포
+- develop :  개발 브랜치이며 , 이 브랜치를 기준으로 각 기능들을 Merge
+- feature : 처리할 기능 단위로 개발
 - release :  develop에서 작업한 내용을 테스트 
 
 
