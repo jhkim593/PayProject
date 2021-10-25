@@ -146,7 +146,7 @@
 - JPA PESSIMISTIC Lock을 이용해 원 결제건에서 결제 취소 동시성 방어
 
 
----
+<br>
 
 
 ## Git flow
