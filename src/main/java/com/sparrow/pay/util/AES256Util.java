@@ -29,6 +29,7 @@ import java.security.NoSuchAlgorithmException;
             if (len > keyBytes.length) {
                 len = keyBytes.length;
             }
+            //keyBytes 에 b를 복사
             System.arraycopy(b, 0, keyBytes, 0, len);
             SecretKeySpec keySpec = new SecretKeySpec(keyBytes, "AES");
 

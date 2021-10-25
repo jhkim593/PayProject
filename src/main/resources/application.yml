@@ -14,7 +14,7 @@ spring:
     properties:
       hibernate:
         format_sql: false
-  aes: ENC(bT+pl9ATBNQABeVZjvs8vKsEtNQvCg61amby3MFENXc=)
+  aes: ENC(Ax/W+iqI8Mz2wKqS/qbOzyRVYAq/RnKIwhKkfOo54gpC1DHc+0cFl6fFpSjij3Cc)
 
 
 jasypt:
