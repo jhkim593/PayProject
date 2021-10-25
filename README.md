@@ -34,8 +34,7 @@
 
 - `Post` /pay
 
--  Request 
-
+- Request
   ~~~json
   {
       "cardNum":"12222222222",
@@ -54,7 +53,7 @@
       "responseMessage": "결제가 성공적으로 처리되었습니다.",
       "isSuccess": true,
       "data": "53823392594814455731"
-  
+  }  
   ~~~
 
 <br>
