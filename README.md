@@ -148,13 +148,6 @@
 
 ---
 
-- Done :결제 승인 ,취소 ,조회 구현
-- ing : db정보 , ase secretkey 암호화
-- todo : readme파일 수정
-
-
-
-
 
 ## Git flow
 
