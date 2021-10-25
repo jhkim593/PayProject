@@ -11,7 +11,7 @@ import javax.validation.constraints.*;
 public class PayRequestDto {
 
     @NotBlank
-    @Pattern(regexp = "[0-9]{10,16}", message = "10~16자리의 숫자만 입력가능합니다")
+    @Pattern(regexp = "[0-9]{10,16}")
     private String cardNum;
 
     @NotBlank
@@ -29,7 +29,6 @@ public class PayRequestDto {
     @Min(100)@Max(1000000000)
     @NotNull
     private Long price;
-
 
     private Long vat;
 

@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/payproject
     username: postgres
-    password: 8834
+    password: ENC(IS9r/Y/Ws3WWDvgxW3608Q==)
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -10,7 +10,14 @@ spring:
     generate-ddl: true
     show-sql: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: false
+  aes: ENC(bT+pl9ATBNQABeVZjvs8vKsEtNQvCg61amby3MFENXc=)
+
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+

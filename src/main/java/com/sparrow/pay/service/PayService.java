@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +32,9 @@ import java.util.Random;
 @Transactional(readOnly = true)
 public class PayService {
 
-    private static String key = "aes256-testingKey";
+
+    @Value("${spring.aes}")
+    private String key;
     private String encStr = "";
 
     private final PayRepository payRepository;
@@ -207,6 +210,7 @@ public class PayService {
      * @param payId 관리 번호
      */
 
+    @Transactional
     public PayInfoDto findPay(String payId) throws UnsupportedEncodingException, DecoderException, InvalidAlgorithmParameterException, NoSuchPaddingException,
             IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException ,PayNotFoundException{
         Pay pay = payRepository.findByPayId(payId).orElseThrow(PayNotFoundException::new);

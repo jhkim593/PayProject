@@ -34,6 +34,7 @@ public class PayController {
         try {
             return new ResponseEntity( payService.createPay(requestDto).getPayId(), HttpStatus.CREATED);
         } catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity( "결제 오류", HttpStatus.CREATED);
         }
     }
@@ -58,10 +59,11 @@ public class PayController {
     @GetMapping("/pay/{id}")
     public ResponseEntity findPay(@PathVariable String id){
         try{
-            return new ResponseEntity(payService.findPay(id).getPayId(), HttpStatus.OK);
+            return new ResponseEntity(payService.findPay(id), HttpStatus.OK);
         }catch (PayNotFoundException e){
             return new ResponseEntity( "기존 결제 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
         }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity( "결제 정보 조회 오류", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

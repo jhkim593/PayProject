@@ -11,6 +11,7 @@ import com.sparrow.pay.exception.PayNotFoundException;
 import com.sparrow.pay.exception.VatExceedPriceException;
 import com.sparrow.pay.repository.PayRepository;
 import org.assertj.core.api.Assertions;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,6 +40,7 @@ public class PayServiceTest2 {
 //
 //    @Autowired
 //    PayRepository payRepository;
+
 
     @Test
     public void case1()throws Exception {
@@ -214,5 +216,6 @@ public class PayServiceTest2 {
         assertThat(list.get(list.size()-1).getOriVat()).isEqualTo(4000L);
 
     }
+
 }
 

@@ -30,6 +30,8 @@ dependencies {
 	//postgresql
 	implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.23'
 
+	implementation group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '3.0.3'
+
 
 }
 
