@@ -15,7 +15,6 @@
 
 
 
-
 <img src="https://user-images.githubusercontent.com/53510936/138397771-2779c640-c528-492c-b89e-fc537c7ae5cf.png"  width="250" height="350" style="margin-left: auto; margin-right: auto; display: block;"/>
 
 
@@ -146,6 +145,13 @@
 - Request data 유효성 검증
 - String 데이터 명세와 일치를 위해 String.format을 사용
 - JPA PESSIMISTIC Lock을 이용해 원 결제건에서 결제 취소 동시성 방어
+
+
+---
+
+- Done :결제 승인 ,취소 ,조회 구현
+- ing : db정보 , ase secretkey 암호화
+- todo : readme파일 수정
 
 
 
