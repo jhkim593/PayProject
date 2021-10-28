@@ -104,7 +104,7 @@ public class PayService {
 
 
     @Transactional
-    public CancelPayResponseDto createCancelPay(CancelPayRequestDto requestDto) throws Exception {
+    public CancelPayResponseDto createCancelPay(CancelPayRequestDto requestDto)  {
 
         Pay pay = payRepository.findByPayId(requestDto.getPayId()).orElseThrow(PayNotFoundException::new);
         String oriData = pay.getData();
@@ -215,7 +215,7 @@ public class PayService {
 
     @Transactional
     public PayInfoDto findPay(String payId) throws UnsupportedEncodingException, DecoderException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException ,PayNotFoundException{
+            IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         Pay pay = payRepository.findByPayId(payId).orElseThrow(PayNotFoundException::new);
         String data = pay.getData();
 
