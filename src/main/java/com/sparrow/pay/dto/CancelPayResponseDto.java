@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CancelPayResponseDto {
     private String payId;
+    private String oriPayId;
     private String data;
     private Long oriPrice;
     private Long oriVat;

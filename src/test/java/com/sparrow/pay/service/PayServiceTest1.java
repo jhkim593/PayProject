@@ -4,7 +4,6 @@ import com.sparrow.pay.dto.*;
 import com.sparrow.pay.entity.Pay;
 import com.sparrow.pay.exception.ExceedCancelPayException;
 import com.sparrow.pay.exception.ExceedVatException;
-import com.sparrow.pay.exception.PayNotFoundException;
 import com.sparrow.pay.exception.VatExceedPriceException;
 import com.sparrow.pay.repository.PayRepository;
 import com.sparrow.pay.util.AES256Util;
@@ -14,13 +13,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
@@ -50,6 +47,8 @@ class PayServiceTest1 {
         requestDto.setInstallmentMonth(0);           //할부 개월수
         requestDto.setPrice(110000L);                //거래금액
         requestDto.setVat(10000L);                   //부가세
+
+        ReflectionTestUtils.setField(payService, "key", key);
 
         //when
         PayResponseDto responseDto = payService.createPay(requestDto);
@@ -93,6 +92,7 @@ class PayServiceTest1 {
         requestDto.setVat(null);                     //부가세 null
 
         //when
+        ReflectionTestUtils.setField(payService, "key", key);
         PayResponseDto responseDto = payService.createPay(requestDto);
         String data = responseDto.getData();
         String id = responseDto.getPayId();
@@ -213,6 +213,8 @@ class PayServiceTest1 {
     }
 
     /**
+     * 원 결재금액 110000 부가세 10000
+     *
      * 결제 취소
      * 취소금액 50000 취소부가세 5000
      * 취소금액 11000 취사부가세 1000
@@ -244,12 +246,16 @@ class PayServiceTest1 {
     }
 
     /**
+     * 원 결재금액 110000 부가세 10000
+     *
      * 결제 취소
      * 취소금액 50000 취소부가세 5000
      * 취소금액 11000 취사부가세 1000
      *
      * 현재
      * 결제금액 49000 결제부가세 4000
+     *
+     *
      */
 
     @Test
@@ -274,6 +280,8 @@ class PayServiceTest1 {
 
     }
     /**
+     * 원 결재금액 110000 부가세 10000
+     *
      * 결제 취소
      * 취소금액 50000 취소부가세 5000
      * 취소금액 11000 취사부가세 1000
@@ -289,6 +297,8 @@ class PayServiceTest1 {
         requestDto.setPayId("57441386610808376609");
         requestDto.setVat(0L);
         requestDto.setCancelPrice(49000L);
+
+        ReflectionTestUtils.setField(payService, "key", key);
 
         //when
         String temp1=" 446PAYMENT   574413866108083766091234567890123456    001125777    1100000000010000                    lQUrO5X3EKg1B4A8rlN%2F2ReOC8hgQZVqGKr6I9sboPI%3D                                                                                                                                                                                                                                                                                                           ";
@@ -312,6 +322,7 @@ class PayServiceTest1 {
         given(payRepository.findByPayId(anyString())).willReturn(Optional.of(Pay.createPay(temp,null,"57441386610808376609")));
 
         //when
+        ReflectionTestUtils.setField(payService, "key", key);
         PayInfoDto pay = payService.findPay("57441386610808376609");
 
         //then

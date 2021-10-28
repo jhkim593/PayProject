@@ -23,6 +23,7 @@ public class PayController {
     private final PayService payService;
     
     @PostMapping("/pay")
+    @CrossOrigin(origins = "http://localhost:3000",allowedHeaders ="*")
     public ResponseEntity pay(@RequestBody @Valid PayRequestDto requestDto){
         try {
             return new ResponseEntity(DefaultResponseVO.res(ResponseMessage.PAY_SUCCESS,true,payService.createPay(requestDto).getPayId()),HttpStatus.CREATED);
@@ -32,9 +33,10 @@ public class PayController {
     }
 
     @PostMapping("/pay/cancel")
+    @CrossOrigin(origins = "http://localhost:3000",allowedHeaders ="*")
     public ResponseEntity cancelPay(@RequestBody @Valid CancelPayRequestDto requestDto){
         try {
-            return new ResponseEntity(DefaultResponseVO.res(ResponseMessage.PAY_CANCEL_SUCCESS,true,payService.createCancelPay(requestDto).getPayId()), HttpStatus.CREATED);
+            return new ResponseEntity(DefaultResponseVO.res(ResponseMessage.PAY_CANCEL_SUCCESS,true,payService.createCancelPay(requestDto)), HttpStatus.CREATED);
         }catch (PayNotFoundException e){
             return new ResponseEntity(DefaultResponseVO.res(ResponseMessage.PAY_NOT_FOUND,false), HttpStatus.NOT_FOUND);
         } catch (ExceedCancelPayException e){
@@ -49,6 +51,7 @@ public class PayController {
     }
 
     @GetMapping("/pay/{id}")
+    @CrossOrigin(origins = "http://localhost:3000",allowedHeaders ="*")
     public ResponseEntity findPay(@PathVariable String id){
         try{
             return new ResponseEntity(DefaultResponseVO.res(ResponseMessage.PAY_FIND_SUCCESS,true,payService.findPay(id)), HttpStatus.OK);

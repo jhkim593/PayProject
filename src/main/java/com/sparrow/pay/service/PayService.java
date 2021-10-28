@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -33,8 +34,10 @@ import java.util.Random;
 public class PayService {
 
 
+
     @Value("${spring.aes}")
     private String key;
+
     private String encStr = "";
 
     private final PayRepository payRepository;
@@ -202,7 +205,7 @@ public class PayService {
         payRepository.save(Pay.createPay(data, pay, payId));
 //        System.out.println("현재금액:"+oriPrice+" "+"현재부가세"+oriVat);
 //        System.out.println();
-        return new CancelPayResponseDto(payId, data,oriPrice,oriVat);
+        return new CancelPayResponseDto(payId,pay.getPayId(),data,oriPrice,oriVat);
     }
 
     /**

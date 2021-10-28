@@ -35,12 +35,6 @@ public class PayServiceTest2 {
     @Autowired
     PayService payService;
 
-//    @Autowired
-//    EntityManager em;
-//
-//    @Autowired
-//    PayRepository payRepository;
-
 
     @Test
     public void case1()throws Exception {
@@ -186,6 +180,7 @@ public class PayServiceTest2 {
         PayResponseDto payResponseDto = payService.createPay(payRequestDto);
         List<CancelPayResponseDto>list=new ArrayList<>();
 
+        CancelPayResponseDto cancelPayResponseDto=null;
         for(int i=0; i<100;i++){
             ex.execute(()->{
                 try {
@@ -194,6 +189,7 @@ public class PayServiceTest2 {
                     cancelPayRequestDto.setCancelPrice(100L);
                     cancelPayRequestDto.setVat(10L);
                     CancelPayResponseDto cancelPay = payService.createCancelPay(cancelPayRequestDto);
+//                    cancelPayResponseDto=payService.createCancelPay(cancelPayRequestDto);
                     list.add(cancelPay);
                 } catch (Exception e) {
 
