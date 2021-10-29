@@ -62,114 +62,82 @@
   }  
   ~~~
 
-  
+<br>
 
-  <br>
 
-  
 
-  ## 결제 
+## 결제 취소
 
-  - `Post` /pay
+- `post` /pay/cancel
 
-  - Request
-    ~~~json
-    {
-        "cardNum":"12222222222",
-        "expirationDate": "1111",
-        "cvc": "222",
-        "installmentMonth" :9,
-        "price" : 10000,
-        "vat": 1000
-    }
-    ~~~
+- Request
 
-  - Response
+  ~~~json
+  {
+      "payId":"02084585697560479073",
+      "cancelPrice": 100,
+      "vat": 5
+  }
+  ~~~
 
-    ~~~json
-    {
-        "responseMessage": "결제가 성공적으로 처리되었습니다.",
-        "isSuccess": true,
-        "data": "53823392594814455731"
-    }  
-    ~~~
+- Response
 
-  <br>
+  ~~~json
+   {
+      "responseMessage": "결제 취소가 정상적으로 처리되었습니다",
+      "isSuccess": true,
+      "data": {
+          "payId": "43490876626115834120",
+          "oriPayId": "02084585697560479073",        
+          "oriPrice": 767,
+          "oriVat": 4
+      }
+  }
+  ~~~
+  원 결제 관리 번호와 결제 취소 후 금액, 부가세를 응답 데이터로 전송
 
-  
+<br>
 
-  ## 결제 취소
 
-  - `post` /pay/cancel
 
-  - Request
+- 결제 취소시 예외 설정
 
-    ~~~json
-    {
-        "payId":"02084585697560479073",
-        "cancelPrice": 100,
-        "vat": 5
-    }
-    ~~~
-
-  - Response
-
-    ~~~json
-     {
-        "responseMessage": "결제 취소가 정상적으로 처리되었습니다",
-        "isSuccess": true,
-        "data": {
-            "payId": "43490876626115834120",
-            "oriPayId": "02084585697560479073",        
-            "oriPrice": 767,
-            "oriVat": 4
-        }
-    }
-    ~~~
-    원 결제 관리 번호와 결제 취소 후 금액, 부가세를 응답 데이터로 전송
-
-  <br>
+  - 기존 결제 정보 존재 하지 않을 때
+  - 취소 금액  > 원 결제 금액
+  - 취소 부가세> 원 결제 부가세
+  - 부가세 > 결제금액
 
   
 
-  - 결제 취소시 예외 설정
+<br>
 
-    - 기존 결제 정보 존재 하지 않을 때
-    - 취소 금액  > 원 결제 금액
-    - 취소 부가세> 원 결제 부가세
-    - 부가세 > 결제금액
 
-    
 
-  <br>
+## 결제 정보 조회
 
-  
+- `Get` / post /{ id }   ( id : 관리번호)   
 
-  ## 결제 정보 조회
+- Response
 
-  - `Get` / post /{ id }   ( id : 관리번호)   
-
-  - Response
-
-    ~~~json
-    {
-        "responseMessage": "결제 정보 조회에 성공했습니다.",
-        "isSuccess": true,
-        "data": {
-            "payId": "98093362544390115682",
-            "cardInfo": {
-                "cardNum": "122222**222",
-                "expirationDate": "1111",
-                "cvc": "222"
-            },
-            "type": "PAYMENT",
-            "priceInfo": {
-                "price": 10000,
-                "vat": 1000
-            }
-        }
-    }
-    ~~~
+  ~~~json
+  {
+      "responseMessage": "결제 정보 조회에 성공했습니다.",
+      "isSuccess": true,
+      "data": {
+          "payId": "98093362544390115682",
+          "cardInfo": {
+              "cardNum": "122222**222",
+              "expirationDate": "1111",
+              "cvc": "222"
+          },
+          "type": "PAYMENT",
+          "priceInfo": {
+              "price": 10000,
+              "vat": 1000
+          }
+      }
+  }
+  ~~~
 
 
 
@@ -216,6 +184,7 @@
         @NotNull
         private Long price;
     
+        @Min(1)
         private Long vat;
     
     }
