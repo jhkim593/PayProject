@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -33,20 +34,21 @@ import java.util.Random;
 public class PayService {
 
 
+
     @Value("${spring.aes}")
     private String key;
+
     private String encStr = "";
 
     private final PayRepository payRepository;
 
-//    public String dd(PayRequestDto requestDto)throws Exception{
-//        PayResponseDto pay = createPay(requestDto);
-//        pay.getData().substring(103,403).
-//    }
-
     @Transactional
     public PayResponseDto createPay(PayRequestDto requestDto) throws UnsupportedEncodingException, EncoderException, InvalidAlgorithmParameterException,
             NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+
+        if(requestDto.getVat()!=null&&requestDto.getPrice()<requestDto.getVat()){
+            throw new VatExceedPriceException();
+        }
         //기능 구분
         String type = String.format("%-10s", "PAYMENT");
 
@@ -93,7 +95,6 @@ public class PayService {
         String extra = String.format("%47s", "");
 
         String data = " 446" + type + payId + cardNum + installmentMonth + expirationDate + cvc + price + vat + oriPayId + cardInfo + extra;
-
         payRepository.save(Pay.createPay(data, null, payId));
         return new PayResponseDto(payId, data);
     }
@@ -101,11 +102,10 @@ public class PayService {
 
 
     @Transactional
-    public CancelPayResponseDto createCancelPay(CancelPayRequestDto requestDto) throws Exception {
+    public CancelPayResponseDto createCancelPay(CancelPayRequestDto requestDto)  {
 
         Pay pay = payRepository.findByPayId(requestDto.getPayId()).orElseThrow(PayNotFoundException::new);
         String oriData = pay.getData();
-
         Long oriPrice = Long.valueOf(oriData.substring(63, 73).trim());
         Long oriVat = Long.valueOf(oriData.substring(73, 83));
         List<Long> priceList = new ArrayList<>();
@@ -200,9 +200,8 @@ public class PayService {
         String data = " 446" + type + payId + cardNum + installmentMonth + expirationDate + cvc + price + vat + oriPayId + cardInfo + extra;
 
         payRepository.save(Pay.createPay(data, pay, payId));
-//        System.out.println("현재금액:"+oriPrice+" "+"현재부가세"+oriVat);
-//        System.out.println();
-        return new CancelPayResponseDto(payId, data,oriPrice,oriVat);
+        System.out.println("현재금액:"+oriPrice+" "+"현재부가세"+oriVat);
+        return new CancelPayResponseDto(payId,pay.getPayId(),data,oriPrice,oriVat);
     }
 
     /**
@@ -212,7 +211,7 @@ public class PayService {
 
     @Transactional
     public PayInfoDto findPay(String payId) throws UnsupportedEncodingException, DecoderException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException ,PayNotFoundException{
+            IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         Pay pay = payRepository.findByPayId(payId).orElseThrow(PayNotFoundException::new);
         String data = pay.getData();
 

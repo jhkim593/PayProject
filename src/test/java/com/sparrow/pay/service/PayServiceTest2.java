@@ -22,10 +22,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.OptimisticLockException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -34,12 +36,6 @@ public class PayServiceTest2 {
 
     @Autowired
     PayService payService;
-
-//    @Autowired
-//    EntityManager em;
-//
-//    @Autowired
-//    PayRepository payRepository;
 
 
     @Test
@@ -50,6 +46,7 @@ public class PayServiceTest2 {
         payRequestDto.setCardNum("1234567890123456");
         payRequestDto.setExpirationDate("1125");
         payRequestDto.setCvc("777");
+        payRequestDto.setInstallmentMonth(0);
         payRequestDto.setPrice(11000L);
         payRequestDto.setVat(1000L);
         PayResponseDto payResponseDto = payService.createPay(payRequestDto);
@@ -105,6 +102,7 @@ public class PayServiceTest2 {
         payRequestDto.setCardNum("1234567890123456");
         payRequestDto.setExpirationDate("1125");
         payRequestDto.setCvc("777");
+        payRequestDto.setInstallmentMonth(0);
         payRequestDto.setPrice(20000L);
         payRequestDto.setVat(909L);
         PayResponseDto payResponseDto = payService.createPay(payRequestDto);
@@ -139,6 +137,7 @@ public class PayServiceTest2 {
         payRequestDto.setCardNum("1234567890123456");
         payRequestDto.setExpirationDate("1125");
         payRequestDto.setCvc("777");
+        payRequestDto.setInstallmentMonth(0);
         payRequestDto.setPrice(20000L);
         payRequestDto.setVat(null);
         PayResponseDto payResponseDto = payService.createPay(payRequestDto);
@@ -181,6 +180,7 @@ public class PayServiceTest2 {
         payRequestDto.setCardNum("1234567890123456");
         payRequestDto.setExpirationDate("1125");
         payRequestDto.setCvc("777");
+        payRequestDto.setInstallmentMonth(0);
         payRequestDto.setPrice(20000L);
         payRequestDto.setVat(5000L);
         PayResponseDto payResponseDto = payService.createPay(payRequestDto);
@@ -203,17 +203,14 @@ public class PayServiceTest2 {
         }
         latch.await();
 
-        CancelPayRequestDto cancelPayRequestDto=new CancelPayRequestDto();
-        cancelPayRequestDto.setPayId(payResponseDto.getPayId());
-        cancelPayRequestDto.setCancelPrice(100L);
-        cancelPayRequestDto.setVat(10L);
+        List<Long> oriPrice = list.stream().map(l -> l.getOriPrice()).collect(Collectors.toList());
+        List<Long> oriVat = list.stream().map(l -> l.getOriVat()).collect(Collectors.toList());
+        Collections.sort(oriPrice);
+        Collections.sort(oriVat);
 
-        CancelPayResponseDto cancelPay = payService.createCancelPay(cancelPayRequestDto);
 
-        assertThat(cancelPay.getOriPrice()).isEqualTo(9900L);
-        assertThat(cancelPay.getOriVat()).isEqualTo(3990L);
-        assertThat(list.get(list.size()-1).getOriPrice()).isEqualTo(10000L);
-        assertThat(list.get(list.size()-1).getOriVat()).isEqualTo(4000L);
+        assertThat(oriPrice.get(0)).isEqualTo(10000L);
+        assertThat(oriVat.get(0)).isEqualTo(4000L);
 
     }
 

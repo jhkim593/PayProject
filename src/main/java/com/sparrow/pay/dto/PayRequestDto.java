@@ -11,20 +11,20 @@ import javax.validation.constraints.*;
 public class PayRequestDto {
 
     @NotBlank
-    @Pattern(regexp = "[0-9]{10,16}")
+    @Pattern(regexp = "[0-9]{10,16}" ,message = "10~16자리 숫자를 입력해주세요.")
     private String cardNum;
 
     @NotBlank
-    @Pattern(regexp = "[0-9]{4}")
+    @Pattern(regexp = "[0-9]{4}",message = "4자리 숫자를 MMYY 형식으로 입력해주세요.")
     private String expirationDate;
 
     @NotBlank
-    @Pattern(regexp = "[0-9]{3}")
+    @Pattern(regexp = "[0-9]{3}",message = "3자리 숫자를 입력해주세요.")
     private String cvc;
 
     @Min(0)@Max(12)
     @NotNull
-    private int installmentMonth;
+    private Integer installmentMonth;
 
     @Min(100)@Max(1000000000)
     @NotNull

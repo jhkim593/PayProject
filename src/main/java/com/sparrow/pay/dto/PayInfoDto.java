@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PayInfoDto {
+
     private String payId;
     private CardInfoDto cardInfo;
     private String type;
