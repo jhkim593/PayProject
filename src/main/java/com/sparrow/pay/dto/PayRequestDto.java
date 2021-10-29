@@ -30,6 +30,7 @@ public class PayRequestDto {
     @NotNull
     private Long price;
 
+    @Min(1)
     private Long vat;
 
 
