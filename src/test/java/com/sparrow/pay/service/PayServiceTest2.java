@@ -6,7 +6,7 @@ import com.sparrow.pay.dto.PayRequestDto;
 import com.sparrow.pay.dto.PayResponseDto;
 import com.sparrow.pay.entity.Pay;
 import com.sparrow.pay.exception.ExceedCancelPayException;
-import com.sparrow.pay.exception.ExceedVatException;git 
+import com.sparrow.pay.exception.ExceedVatException;
 import com.sparrow.pay.exception.VatExceedPriceException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
