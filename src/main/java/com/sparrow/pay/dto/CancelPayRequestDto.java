@@ -13,9 +13,10 @@ public class CancelPayRequestDto {
     private String payId;
 
     @NotNull
-    @Min(0)
+    @Min(1)
     private Long cancelPrice;
 
+    @Min(1)
     private Long vat;
 
 }

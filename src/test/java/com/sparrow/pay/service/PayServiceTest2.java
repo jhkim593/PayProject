@@ -6,20 +6,12 @@ import com.sparrow.pay.dto.PayRequestDto;
 import com.sparrow.pay.dto.PayResponseDto;
 import com.sparrow.pay.entity.Pay;
 import com.sparrow.pay.exception.ExceedCancelPayException;
-import com.sparrow.pay.exception.ExceedVatException;
-import com.sparrow.pay.exception.PayNotFoundException;
+import com.sparrow.pay.exception.ExceedVatException;git 
 import com.sparrow.pay.exception.VatExceedPriceException;
-import com.sparrow.pay.repository.PayRepository;
-import org.assertj.core.api.Assertions;
-import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.OptimisticLockException;
 
 import java.util.ArrayList;
 import java.util.Collections;
