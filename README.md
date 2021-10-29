@@ -20,7 +20,7 @@
 
   ## Entity
 
-<<<<<<< HEAD
+
 <img src="https://user-images.githubusercontent.com/53510936/138397771-2779c640-c528-492c-b89e-fc537c7ae5cf.png"  width="250" height="350" style="margin-left: auto; margin-right: auto; display: block;"/>
 
 
@@ -61,19 +61,6 @@
       "data": "53823392594814455731"
   }  
   ~~~
-=======
-  
->>>>>>> release/0.2.0
-
-
-  <img src="https://user-images.githubusercontent.com/53510936/138397771-2779c640-c528-492c-b89e-fc537c7ae5cf.png"  width="250" height="350" style="margin-left: auto; margin-right: auto; display: block;"/>
-
-  
-
-  - payId : 관리번호
-
-  - data :  카드사로 전송되는 String 데이터
-  - parentPay : 취소의 경우 원 거래 테이블을 부모로 가짐
 
   
 
@@ -184,14 +171,13 @@
     }
     ~~~
 
-<<<<<<< HEAD
+
+
 <br>
-=======
-  
+
 
   - 결제 정보 조회 시 예외 설정
     - 기존 결제정보가 존재 하지 않을 때
->>>>>>> release/0.2.0
 
   
 
